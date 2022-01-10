@@ -1,0 +1,18 @@
+---
+argo-cd:
+  installCRDs: false
+  dex:
+    enabled: false
+  server:
+    nodeSelector:
+      NodeGroup: "Tools-NodeGroup"
+    config:
+      repositories: |
+        - type: git
+          url: git@github.com:NIXKnight/ArgoCD-Demo.git
+          sshPrivateKeySecret:
+            name: ssh-keys
+            key: id_rsa
+        - type: helm
+          url: https://argoproj.github.io/argo-helm
+          name: argoproj
