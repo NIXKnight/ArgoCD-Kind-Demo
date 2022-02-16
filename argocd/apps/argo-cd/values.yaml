@@ -4,8 +4,6 @@ argo-cd:
   dex:
     enabled: false
   server:
-    nodeSelector:
-      NodeGroup: "Tools-NodeGroup"
     config:
       repositories: |
         - type: git

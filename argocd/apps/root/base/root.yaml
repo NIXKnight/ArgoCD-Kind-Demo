@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argoproj
+spec:
+  project: default
+  source:
+    path: argocd/apps/root
+    repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
+    targetRevision: NIXKnight/revamp
+  destination:
+    namespace: argoproj
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
