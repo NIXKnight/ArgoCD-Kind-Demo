@@ -10,7 +10,7 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-    path: argocd/apps/argocd
+    path: argocd/apps/argo-cd
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:

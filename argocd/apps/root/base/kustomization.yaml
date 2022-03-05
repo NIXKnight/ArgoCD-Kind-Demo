@@ -2,6 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
-  - ../../../apps/argocd/app
+  - ../../../apps/argo-cd/app
 resources:
   - root.yaml
