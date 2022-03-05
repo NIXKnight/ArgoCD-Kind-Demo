@@ -1,0 +1,7 @@
+---
+tekton-pipeline:
+  auth:
+    git:
+      url: https://github.com
+      username: "NIXKnight"
+      password: "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"
