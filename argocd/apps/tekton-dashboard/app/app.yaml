@@ -2,14 +2,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tekton-pipelines
+  name: tekton-dashboard
 spec:
   project: default
   source:
-    helm:
-      valueFiles:
-        - values.yaml
-    path: argocd/apps/tekton-pipeline
+    path: argocd/apps/tekton-dashboard
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:

@@ -2,18 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tekton-pipelines
+  name: manifests
 spec:
   project: default
   source:
-    helm:
-      valueFiles:
-        - values.yaml
-    path: argocd/apps/tekton-pipeline
+    path: argocd/manifests
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: tekton-pipelines
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
