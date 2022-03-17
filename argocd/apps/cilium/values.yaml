@@ -1,0 +1,19 @@
+---
+cilium:
+  kubeProxyReplacement: partial
+  image:
+    pullPolicy: IfNotPresent
+  nodeinit:
+    enabled: true
+  hostServices:
+    enabled: false
+  externalIPs:
+    enabled: true
+  bpf:
+    masquerade: false
+  ipam:
+    mode: kubernetes
+  nodePort:
+    enabled: true
+  hostPort:
+    enabled: true

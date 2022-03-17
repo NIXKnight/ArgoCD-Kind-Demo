@@ -2,16 +2,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: manifests
+  name: metallb
+  namespace: argoproj
 spec:
   project: default
   source:
-    path: argocd/manifests
+    path: argocd/apps/metallb
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
+    namespace: metallb-system
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

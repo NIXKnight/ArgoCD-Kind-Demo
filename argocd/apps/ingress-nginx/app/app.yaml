@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metrics-server
+  name: ingress-nginx
   namespace: argoproj
 spec:
   project: default
@@ -10,11 +10,11 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-    path: argocd/apps/metrics-server
+    path: argocd/apps/ingress-nginx
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: metrics-server
+    namespace: ingress-nginx
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

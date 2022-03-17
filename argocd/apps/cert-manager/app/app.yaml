@@ -2,19 +2,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metrics-server
+  name: cert-manager
   namespace: argoproj
 spec:
   project: default
   source:
-    helm:
-      valueFiles:
-        - values.yaml
-    path: argocd/apps/metrics-server
+    path: argocd/apps/cert-manager
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: metrics-server
+    namespace: cert-manager
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

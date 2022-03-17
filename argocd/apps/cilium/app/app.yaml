@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metrics-server
+  name: cilium
   namespace: argoproj
 spec:
   project: default
@@ -10,15 +10,13 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-    path: argocd/apps/metrics-server
+    path: argocd/apps/cilium
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: metrics-server
+    namespace: kube-system
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-    - CreateNamespace=true

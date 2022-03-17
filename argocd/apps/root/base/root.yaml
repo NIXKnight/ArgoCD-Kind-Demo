@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: app-of-apps
   namespace: argoproj
 spec:
   project: default
@@ -17,3 +17,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

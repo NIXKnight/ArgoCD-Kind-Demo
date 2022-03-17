@@ -2,10 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
-  - ../../../manifests/app
+  - ../../../apps/cert-manager/app
   - ../../../apps/argo-cd/app
+  - ../../../apps/cilium/app
+  - ../../../apps/metallb/app
+  - ../../../apps/ingress-nginx/app
   - ../../../apps/metrics-server/app
-  - ../../../apps/tekton-pipeline/app
-  - ../../../apps/tekton-dashboard/app
+  # - ../../../apps/tekton-pipeline/app
+  # - ../../../apps/tekton-dashboard/app
 resources:
   - root.yaml
