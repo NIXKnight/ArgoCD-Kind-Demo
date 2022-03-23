@@ -8,6 +8,7 @@ bases:
   - ../../../apps/metallb/app
   - ../../../apps/ingress-nginx/app
   - ../../../apps/metrics-server/app
+  - ../../../apps/mariadb/app
   # - ../../../apps/tekton-pipeline/app
   # - ../../../apps/tekton-dashboard/app
 resources:

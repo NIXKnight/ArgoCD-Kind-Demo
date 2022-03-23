@@ -1,0 +1,10 @@
+---
+apiVersion: v2
+name: mariadb
+version: 10.4.2
+appVersion: 10.5.15
+dependencies:
+  - name: mariadb
+    version: 10.4.2
+    appVersion: 10.5.15
+    repository: https://charts.bitnami.com/bitnami

@@ -1,0 +1,4 @@
+---
+mariadb:
+  auth:
+    rootPassword: "my-super-secret-root-password"
