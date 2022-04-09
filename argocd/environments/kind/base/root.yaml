@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    path: argocd/apps/root
+    path: argocd/environments/kind
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:

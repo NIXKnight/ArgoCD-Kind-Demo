@@ -1,0 +1,24 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../../app/
+patches:
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      name: cert-manager
+      namespace: argoproj
+      labelSelector: deploymentStrategy=kustomize
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: cert-manager
+        namespace: argoproj
+        labels:
+          deploymentStrategy: kustomize
+      spec:
+        source:
+          path: argocd/apps/cert-manager/environments/kind/

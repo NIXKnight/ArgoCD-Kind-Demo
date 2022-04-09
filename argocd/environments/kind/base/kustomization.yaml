@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../../apps/cert-manager/environments/kind/app
+  - ../../../apps/argo-cd/app
+  - ../../../apps/cilium/app
+  - ../../../apps/metallb/environments/kind/app
+  - ../../../apps/ingress-nginx/app
+  - ../../../apps/metrics-server/app
+  - ../../../apps/mariadb/app
+  # - ../../../apps/tekton-pipeline/app
+  # - ../../../apps/tekton-dashboard/app
+
+resources:
+  - root.yaml
+
+patches:
+  # Patch for all ArgoCD applications that use Helm charts to use specific values file(s)
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argoproj
+      labelSelector: deploymentStrategy=helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: helm
+      spec:
+        source:
+          helm:
+            valueFiles:
+              - environments/kind/values.yaml

@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: metallb
   namespace: argoproj
+  labels:
+    deploymentStrategy: kustomize
 spec:
   project: default
   source:

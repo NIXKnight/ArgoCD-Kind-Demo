@@ -73,7 +73,7 @@ kind load docker-image cilium/cilium:v1.11.2 --name caldera
 ```
 Install Cilium:
 ```bash
-helm install cilium argocd/apps/cilium/ --namespace kube-system -f argocd/apps/cilium/values.yaml
+helm install cilium argocd/apps/cilium/ --namespace kube-system -f argocd/apps/cilium/environments/kind/values.yaml
 ```
 
 ## **ArgoCD Initial Setup on Kind**
@@ -83,9 +83,9 @@ kubectl create namespace argoproj && kubectl create secret generic ssh-keys --fr
 ```
 Install ArgoCD:
 ```bash
-helm install argocd argocd/apps/argo-cd/ --namespace argoproj -f argocd/apps/argo-cd/values.yaml
+helm install argocd argocd/apps/argo-cd/ --namespace argoproj -f argocd/apps/argo-cd/environments/kind/values.yaml
 ```
 Deploy apps with ArgoCD:
 ```bash
-kustomize build argocd/apps/root | kubectl apply -f -
+kustomize build argocd/environments/kind/ | kubectl apply -f -
 ```

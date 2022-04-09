@@ -4,12 +4,11 @@ kind: Application
 metadata:
   name: mariadb
   namespace: argoproj
+  labels:
+    deploymentStrategy: helm
 spec:
   project: default
   source:
-    helm:
-      valueFiles:
-        - values.yaml
     path: argocd/apps/mariadb
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
