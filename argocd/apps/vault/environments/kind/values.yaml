@@ -1,0 +1,41 @@
+---
+vault:
+  global:
+    enabled: true
+  ui:
+    enabled: true
+  server:
+    ha:
+      enabled: true
+      replicas: 3
+      raft:
+        enabled: true
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 500m
+    livenessProbe:
+      enabled: true
+      path: "/v1/sys/health?standbyok=true"
+      initialDelaySeconds: 120
+    readinessProbe:
+      enabled: true
+      path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
+    standalone:
+      enabled: false
+    ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: selfsigned-issuer
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        hosts:
+          - host: vault.local.nixknight.pk
+        tls:
+          - secretName: vault-tls-certificate
+            hosts:
+              - vault.local.nixknight.pk

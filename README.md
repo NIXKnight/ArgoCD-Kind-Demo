@@ -65,6 +65,8 @@ Provision the cluster:
 kind create cluster --config kind-caldera-cluster.yaml
 ```
 
+Use any one of the CNI modules listed below.
+
 ## **Setup Cilium in Kind**
 Download Cilium container image and load it to all Kind nodes:
 ```bash
@@ -74,6 +76,22 @@ kind load docker-image cilium/cilium:v1.11.2 --name caldera
 Install Cilium:
 ```bash
 helm install cilium argocd/apps/cilium/ --namespace kube-system -f argocd/apps/cilium/environments/kind/values.yaml
+```
+
+## **Setup Calico in Kind**
+Download Calico container images and load them to all Kind nodes:
+```bash
+docker pull docker.io/calico/cni:v3.23.0
+docker pull docker.io/calico/node:v3.23.0
+docker pull docker.io/calico/kube-controllers:v3.23.0
+kind load docker-image docker.io/calico/cni:v3.23.0 --name caldera
+kind load docker-image docker.io/calico/node:v3.23.0 --name caldera
+kind load docker-image docker.io/calico/kube-controllers:v3.23.0 --name caldera
+
+```
+Install Calico using Calico's manifest:
+```bash
+kubectl apply -f https://docs.projectcalico.org/v3.23/manifests/calico.yaml
 ```
 
 ## **ArgoCD Initial Setup on Kind**

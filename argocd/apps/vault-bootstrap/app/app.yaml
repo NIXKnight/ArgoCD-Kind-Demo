@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault-bootstrap
+  namespace: argoproj
+  labels:
+    deploymentStrategy: kustomize
+spec:
+  project: default
+  source:
+    path: argocd/apps/vault-bootstrap
+    repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
+    targetRevision: master
+  destination:
+    namespace: vault
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
