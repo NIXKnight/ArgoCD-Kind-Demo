@@ -3,6 +3,11 @@ cilium:
   kubeProxyReplacement: partial
   image:
     pullPolicy: IfNotPresent
+    useDigest: false
+  operator:
+    image:
+      pullPolicy: IfNotPresent
+      useDigest: false
   nodeinit:
     enabled: true
   hostServices:
