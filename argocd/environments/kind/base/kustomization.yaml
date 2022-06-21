@@ -10,7 +10,7 @@ bases:
   # - ../../../apps/metrics-server/app
   # - ../../../apps/mariadb/app
   - ../../../apps/vault/app
-  - ../../../apps/vault-bootstrap/environments/kind/app
+  # - ../../../apps/vault-bootstrap/environments/kind/app
   # - ../../../apps/tekton-pipeline/app
   # - ../../../apps/tekton-dashboard/app
 
@@ -43,21 +43,22 @@ patches:
       group: argoproj.io
       version: v1alpha1
       kind: Application
-      labelSelector: deployMethod=kustomized-helm
+      labelSelector: deploymentStrategy=kustomized-helm
     patch: |-
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        metadata:
-          name: any-name
-          namespace: argoproj
-        spec:
-          source:
-            plugin:
-              name: kustomized-helm
-              env:
-                - name: HELM_VALUES
-                  value: |
-                    -f environments/kind/values.yaml
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: kustomized-helm
+      spec:
+        source:
+          plugin:
+            name: kustomized-helm
+            env:
+              - name: HELM_VALUES
+                value: -f environments/kind/values.yaml
   # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
   # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
   - target:

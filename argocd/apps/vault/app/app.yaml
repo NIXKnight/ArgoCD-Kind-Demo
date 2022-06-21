@@ -5,7 +5,7 @@ metadata:
   name: vault
   namespace: argoproj
   labels:
-    deploymentStrategy: helm
+    deploymentStrategy: kustomized-helm
 spec:
   project: default
   source:
@@ -21,3 +21,10 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+  # Fix agent injector sync issue.
+  # https://discuss.hashicorp.com/t/instaling-vault-through-argocd-workflow-agent-injector-cant-be-synced/32375/2
+  ignoreDifferences:
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+    jqPathExpressions:
+    - .webhooks[]?.clientConfig.caBundle
