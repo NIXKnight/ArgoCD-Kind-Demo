@@ -38,6 +38,26 @@ patches:
           helm:
             valueFiles:
               - environments/kind/values.yaml
+  # Patch for all ArgoCD applications using kustomized-helm
+  - target:
+      group: argoproj.io
+      version: v1alpha1
+      kind: Application
+      labelSelector: deployMethod=kustomized-helm
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argoproj
+        spec:
+          source:
+            plugin:
+              name: kustomized-helm
+              env:
+                - name: HELM_VALUES
+                  value: |
+                    -f environments/kind/values.yaml
   # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
   # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
   - target:

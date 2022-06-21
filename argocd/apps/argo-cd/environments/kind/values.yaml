@@ -14,9 +14,14 @@ argo-cd:
           sshPrivateKeySecret:
             name: ssh-keys
             key: id_rsa
-        - type: helm
-          url: https://argoproj.github.io/argo-helm
-          name: argoproj
+      configManagementPlugins: |
+        - name: kustomized-helm
+          init:
+            command: ["/bin/sh", "-c"]
+            args: ["helm dependency build || true"]
+          generate:
+            command: ["/bin/sh", "-c"]
+            args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE $HELM_VALUES --include-crds > manifest.yaml && kustomize build" ]
     ingress:
       enabled: true
       ingressClassName: "nginx"
