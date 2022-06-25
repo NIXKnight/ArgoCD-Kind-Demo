@@ -73,3 +73,17 @@ patches:
           namespace: argoproj
           finalizers:
             - resources-finalizer.argocd.argoproj.io
+  # Patch for all ArgoCD applications to change git branch for testing new apps
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argoproj
+        spec:
+          source:
+            targetRevision: master
