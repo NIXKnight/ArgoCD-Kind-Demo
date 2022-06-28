@@ -1,10 +1,10 @@
 ---
 apiVersion: v2
 name: cilium
-version: 1.11.2
-appVersion: 1.11.2
+version: 1.11.6
+appVersion: 1.11.6
 dependencies:
   - name: cilium
-    version: 1.11.2
-    appVersion: 1.11.2
+    version: 1.11.6
+    appVersion: 1.11.6
     repository: https://helm.cilium.io/
