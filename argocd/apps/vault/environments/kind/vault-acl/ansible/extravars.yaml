@@ -1,0 +1,22 @@
+vault_secret_backends:
+  - name: "kv_secrets"
+    backend: "kv-v2"
+
+vault_default_capabilities: 'capabilities = [ "read", "list" ]'
+
+vault_roles_and_policies:
+  - role:
+      name: "argocd"
+      bound_service_account_names:
+        - "argocd-application-controller"
+      bound_service_account_namespaces:
+        - "argoproj"
+    policies:
+      - name: "argocd"
+        rules: |
+          path "kv_secrets" {
+            {{ vault_default_capabilities }}
+          }
+          path "kv_secrets/*" {
+            {{ vault_default_capabilities }}
+          }

@@ -21,7 +21,7 @@ argo-cd:
             args: ["helm dependency build || true"]
           generate:
             command: ["/bin/sh", "-c"]
-            args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE $HELM_VALUES --include-crds > manifest.yaml && kustomize build" ]
+            args: [ "cd $ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
     ingress:
       enabled: true
       ingressClassName: "nginx"

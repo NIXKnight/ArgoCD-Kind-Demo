@@ -1,0 +1,31 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vault-acl
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: vault-acl
+          volumes:
+            - name: vault-acl
+              configMap:
+                name: vault-acl
+                defaultMode: 0755
+          containers:
+            - name: vault-acl
+              image: nixknight/kube-utils:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                # - sleep
+                - /vault-acl/vault-acls-and-roles-wrapper.sh
+              # args:
+              #   - 99d
+              volumeMounts:
+                - name: vault-acl
+                  mountPath: /vault-acl
+          restartPolicy: OnFailure
