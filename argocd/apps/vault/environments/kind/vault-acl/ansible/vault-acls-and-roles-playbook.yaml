@@ -11,6 +11,12 @@
       hashivault_auth_method:
         method_type: "kubernetes"
 
+    - name: Configure Vault to Talk to Kubernetes
+      hashivault_k8s_auth_config:
+        kubernetes_host: "{{ kubernetes_host }}"
+        kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
+
+
     - name: Enable Vault kv-v2 Secret Engine
       hashivault_secret_engine:
         name: "{{ item.name }}"

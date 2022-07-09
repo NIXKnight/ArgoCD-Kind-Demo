@@ -38,6 +38,36 @@ patches:
           helm:
             valueFiles:
               - environments/kind/values.yaml
+  # Patch for all ArgoCD applications that use Helm charts with ArgoCD Vault Plugin
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argoproj
+      labelSelector: deploymentStrategy=argocd-vault-plugin-helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: argocd-vault-plugin-helm
+      spec:
+        source:
+          plugin:
+            name: argocd-vault-plugin-helm
+            env:
+              - name: ENVIRONMENT_DIR
+                value: environments/kind
+              - name: AVP_TYPE
+                value: vault
+              - name: AVP_AUTH_TYPE
+                value: k8s
+              - name: AVP_K8S_ROLE
+                value: argocd
+              - name: VAULT_ADDR
+                value: http://vault.vault.svc.cluster.local:8200
   # Patch for all ArgoCD applications using kustomized-helm
   - target:
       group: argoproj.io
@@ -58,7 +88,7 @@ patches:
             name: kustomized-helm
             env:
               - name: ENVIRONMENT_DIR
-                value: environments/kind/
+                value: environments/kind
   # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
   # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
   - target:
