@@ -1,3 +1,6 @@
+kubernetes_host: "https://kubernetes.default.svc.cluster.local"
+kubernetes_ca_cert: "{{lookup('ansible.builtin.file', '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt') }}"
+
 vault_secret_backends:
   - name: "kv_secrets"
     backend: "kv-v2"
@@ -8,15 +11,15 @@ vault_roles_and_policies:
   - role:
       name: "argocd"
       bound_service_account_names:
-        - "argocd-application-controller"
+        - "argocd-repo-server"
       bound_service_account_namespaces:
         - "argoproj"
     policies:
       - name: "argocd"
         rules: |
-          path "kv_secrets" {
+          path "kv_secrets/data/apps/" {
             {{ vault_default_capabilities }}
           }
-          path "kv_secrets/*" {
+          path "kv_secrets/data/apps/*" {
             {{ vault_default_capabilities }}
           }
