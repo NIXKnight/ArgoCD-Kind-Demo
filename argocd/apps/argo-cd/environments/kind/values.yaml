@@ -47,7 +47,7 @@ argo-cd:
             args: ["helm dependency build || true"]
           generate:
             command: ["/bin/sh", "-c"]
-            args: [ "cd $ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
+            args: [ "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
         - name: argocd-vault-plugin-kustomize
           generate:
             command: ["sh", "-c"]
@@ -58,7 +58,7 @@ argo-cd:
             args: ["helm dependency build || true"]
           generate:
             command: ["/bin/sh", "-c"]
-            args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -" ]
+            args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -" ]
     ingress:
       enabled: true
       ingressClassName: "nginx"
