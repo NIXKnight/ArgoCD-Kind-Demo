@@ -13,7 +13,7 @@ argo-cd:
         command: [sh, -c]
         env:
           - name: AVP_VERSION
-            value: "1.7.0"
+            value: "1.12.0"
         args:
           - |
             wget -O argocd-vault-plugin https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v${AVP_VERSION}/argocd-vault-plugin_${AVP_VERSION}_linux_amd64
