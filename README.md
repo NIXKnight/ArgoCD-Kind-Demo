@@ -70,8 +70,8 @@ Use any one of the CNI modules listed below.
 ## **Setup Cilium in Kind**
 Download Cilium container image and load it to all Kind nodes:
 ```bash
-docker pull cilium/cilium:v1.11.2
-kind load docker-image cilium/cilium:v1.11.2 --name caldera
+docker pull cilium/cilium:v1.13.0
+kind load docker-image cilium/cilium:v1.13.0 --name caldera
 ```
 Install Cilium:
 ```bash

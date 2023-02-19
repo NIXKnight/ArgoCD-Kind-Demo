@@ -1,6 +1,5 @@
 ---
 cilium:
-  kubeProxyReplacement: partial
   image:
     pullPolicy: IfNotPresent
     useDigest: false
@@ -8,17 +7,5 @@ cilium:
     image:
       pullPolicy: IfNotPresent
       useDigest: false
-  nodeinit:
-    enabled: true
-  hostServices:
-    enabled: false
-  externalIPs:
-    enabled: true
-  bpf:
-    masquerade: false
   ipam:
     mode: kubernetes
-  nodePort:
-    enabled: true
-  hostPort:
-    enabled: true
