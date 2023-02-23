@@ -97,7 +97,7 @@ kubectl apply -f https://docs.projectcalico.org/v3.23/manifests/calico.yaml
 ## **ArgoCD Initial Setup on Kind**
 Add private key for ArgoCD repo:
 ```bash
-kubectl create namespace argoproj && kubectl create secret generic ssh-keys --from-file=id_rsa=$HOME/.ssh/id_rsa -n argoproj
+kubectl -n argoproj create secret generic argocd-repo-creds-ssh-creds --from-literal=url=git@github.com:NIXKnight/ArgoCD-Demo.git --from-file=sshPrivateKey=$HOME/.ssh/id_rsa -o json --dry-run=client | jq '.metadata.labels |= {"argocd.argoproj.io/secret-type": "repo-creds"}' | kubectl apply -f -
 ```
 Install ArgoCD:
 ```bash

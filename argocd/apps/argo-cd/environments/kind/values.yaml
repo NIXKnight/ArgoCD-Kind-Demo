@@ -6,12 +6,10 @@ argo-cd:
   configs:
     secret:
       argocdServerAdminPassword: "$2a$10$dE0AHjZA8cAte0CBzwRD6u7sdf0.S3WBsO29iu11dotKdeR53gOSu"
-    repositories: |
-      - type: git
+    repositories:
+      argo-cd-git-repo:
+        type: git
         url: git@github.com:NIXKnight/ArgoCD-Demo.git
-        sshPrivateKeySecret:
-          name: ssh-keys
-          key: id_rsa
     configManagementPlugins: |
       - name: kustomized-helm
         init:
