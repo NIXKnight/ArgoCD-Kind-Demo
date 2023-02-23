@@ -6,6 +6,31 @@ argo-cd:
   configs:
     secret:
       argocdServerAdminPassword: "$2a$10$dE0AHjZA8cAte0CBzwRD6u7sdf0.S3WBsO29iu11dotKdeR53gOSu"
+    repositories: |
+      - type: git
+        url: git@github.com:NIXKnight/ArgoCD-Demo.git
+        sshPrivateKeySecret:
+          name: ssh-keys
+          key: id_rsa
+    configManagementPlugins: |
+      - name: kustomized-helm
+        init:
+          command: ["/bin/sh", "-c"]
+          args: ["helm dependency build || true"]
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: [ "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
+      - name: argocd-vault-plugin-kustomize
+        generate:
+          command: ["sh", "-c"]
+          args: ["kustomize build . | argocd-vault-plugin generate -"]
+      - name: argocd-vault-plugin-helm
+        init:
+          command: ["/bin/sh", "-c"]
+          args: ["helm dependency build || true"]
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -" ]
   repoServer:
     initContainers:
       - name: download-tools
@@ -33,32 +58,6 @@ argo-cd:
       - name: custom-tools
         emptyDir: {}
   server:
-    config:
-      repositories: |
-        - type: git
-          url: git@github.com:NIXKnight/ArgoCD-Demo.git
-          sshPrivateKeySecret:
-            name: ssh-keys
-            key: id_rsa
-      configManagementPlugins: |
-        - name: kustomized-helm
-          init:
-            command: ["/bin/sh", "-c"]
-            args: ["helm dependency build || true"]
-          generate:
-            command: ["/bin/sh", "-c"]
-            args: [ "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
-        - name: argocd-vault-plugin-kustomize
-          generate:
-            command: ["sh", "-c"]
-            args: ["kustomize build . | argocd-vault-plugin generate -"]
-        - name: argocd-vault-plugin-helm
-          init:
-            command: ["/bin/sh", "-c"]
-            args: ["helm dependency build || true"]
-          generate:
-            command: ["/bin/sh", "-c"]
-            args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -" ]
     ingress:
       enabled: true
       ingressClassName: "nginx"
