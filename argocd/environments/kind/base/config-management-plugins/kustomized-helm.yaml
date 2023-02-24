@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ConfigManagementPlugin
+metadata:
+  name: kustomized-helm
+spec:
+  init:
+    command:
+      - "/bin/bash"
+      - "-c"
+    args:
+      - "helm dependency build"
+  generate:
+    command:
+      - "/bin/bash"
+      - "-c"
+    args:
+      - "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build"

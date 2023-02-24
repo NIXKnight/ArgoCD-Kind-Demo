@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ConfigManagementPlugin
+metadata:
+  name: argocd-vault-plugin-helm
+spec:
+  init:
+    command:
+      - "/bin/bash"
+      - "-c"
+    args:
+      - "helm dependency build || true"
+  generate:
+    command:
+      - "/bin/bash"
+      - "-c"
+    args:
+      - "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -"

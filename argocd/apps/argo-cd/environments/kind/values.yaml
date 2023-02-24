@@ -12,51 +12,29 @@ argo-cd:
       argo-cd-git-repo:
         type: git
         url: git@github.com:NIXKnight/ArgoCD-Demo.git
-    configManagementPlugins: |
-      - name: kustomized-helm
-        init:
-          command: ["/bin/sh", "-c"]
-          args: ["helm dependency build || true"]
-        generate:
-          command: ["/bin/sh", "-c"]
-          args: [ "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build" ]
-      - name: argocd-vault-plugin-kustomize
-        generate:
-          command: ["sh", "-c"]
-          args: ["kustomize build . | argocd-vault-plugin generate -"]
-      - name: argocd-vault-plugin-helm
-        init:
-          command: ["/bin/sh", "-c"]
-          args: ["helm dependency build || true"]
-        generate:
-          command: ["/bin/sh", "-c"]
-          args: [ "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -" ]
   repoServer:
-    initContainers:
-      - name: download-tools
-        image: alpine:3.8
-        command: [sh, -c]
-        env:
-          - name: AVP_VERSION
-            value: "1.12.0"
-        args:
-          - |
-            wget -O argocd-vault-plugin https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v${AVP_VERSION}/argocd-vault-plugin_${AVP_VERSION}_linux_amd64
-            chmod +x argocd-vault-plugin
-            mv argocd-vault-plugin /custom-tools/
-        volumeMounts:
-          - name: custom-tools
-            mountPath: /custom-tools
     env:
       - name: ARGOCD_EXEC_TIMEOUT
         value: "120"
-    volumeMounts:
-      - name: custom-tools
-        mountPath: /usr/local/bin/argocd-vault-plugin
-        subPath: argocd-vault-plugin
     volumes:
-      - name: custom-tools
-        emptyDir: {}
+     - name: cmp-plugins
+       configMap:
+         name: cmp-plugins
+    extraContainers:
+      - name: cmp-kustomized-helm
+        command: [/var/run/argocd/argocd-cmp-server]
+        image: nixknight/kube-utils:v0.31
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: kustomized-helm.yaml
+            name: cmp-plugins
   server:
     ingress:
       enabled: true
