@@ -1,6 +1,8 @@
 ---
 argo-cd:
-  installCRDs: true
+  crds:
+    install: true
+    keep: false
   dex:
     enabled: false
   configs:
