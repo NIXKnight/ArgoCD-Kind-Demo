@@ -127,4 +127,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: NIXKnight/argocd-chart-upgrade
+            targetRevision: master
