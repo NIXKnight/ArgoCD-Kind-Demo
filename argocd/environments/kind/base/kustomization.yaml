@@ -1,6 +1,7 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: argoproj
 bases:
   - ../../../apps/cert-manager/environments/kind/app
   - ../../../apps/argo-cd/app
@@ -16,6 +17,14 @@ bases:
 
 resources:
   - root.yaml
+
+configMapGenerator:
+  - name: cmp-plugins
+    files:
+      - config-management-plugins/kustomized-helm.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
 
 patches:
   # Patch for all ArgoCD applications that use Helm charts to use specific values file(s) in kind environment
@@ -116,4 +125,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: master
+            targetRevision: NIXKnight/argocd-chart-upgrade
