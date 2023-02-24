@@ -36,6 +36,36 @@ argo-cd:
           - mountPath: /home/argocd/cmp-server/config/plugin.yaml
             subPath: kustomized-helm.yaml
             name: cmp-plugins
+      - name: cmp-argocd-vault-plugin-helm
+        command:
+          - "/var/run/argocd/argocd-cmp-server"
+        image: nixknight/kube-utils:v0.31
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: argocd-vault-plugin-helm.yaml
+            name: cmp-plugins
+      - name: cmp-argocd-vault-plugin-kustomize
+        command:
+          - "/var/run/argocd/argocd-cmp-server"
+        image: nixknight/kube-utils:v0.31
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: argocd-vault-plugin-kustomize.yaml
+            name: cmp-plugins
   server:
     ingress:
       enabled: true

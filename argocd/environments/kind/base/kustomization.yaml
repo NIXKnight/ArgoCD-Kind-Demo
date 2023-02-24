@@ -22,6 +22,8 @@ configMapGenerator:
   - name: cmp-plugins
     files:
       - config-management-plugins/kustomized-helm.yaml
+      - config-management-plugins/argocd-vault-plugin-helm.yaml
+      - config-management-plugins/argocd-vault-plugin-kustomize.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
