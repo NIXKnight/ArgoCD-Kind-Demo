@@ -12,14 +12,68 @@ argo-cd:
       argo-cd-git-repo:
         type: git
         url: git@github.com:NIXKnight/ArgoCD-Demo.git
+    cmp:
+      create: true
+      plugins:
+        kustomized-helm: |
+          ---
+          apiVersion: argoproj.io/v1alpha1
+          kind: ConfigManagementPlugin
+          metadata:
+            name: kustomized-helm
+          spec:
+            init:
+              command:
+                - "/bin/bash"
+                - "-c"
+              args:
+                - "helm dependency build"
+            generate:
+              command:
+                - "/bin/bash"
+                - "-c"
+              args:
+                - "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build"
+        helm-argocd-vault-plugin: |
+          ---
+          apiVersion: argoproj.io/v1alpha1
+          kind: ConfigManagementPlugin
+          metadata:
+            name: helm-argocd-vault-plugin
+          spec:
+            init:
+              command:
+                - "/bin/bash"
+                - "-c"
+              args:
+                - "helm dependency build || true"
+            generate:
+              command:
+                - "/bin/bash"
+                - "-c"
+              args:
+                - "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -"
+        kustomize-argocd-vault-plugin: |
+          ---
+          apiVersion: argoproj.io/v1alpha1
+          kind: ConfigManagementPlugin
+          metadata:
+            name: kustomize-argocd-vault-plugin
+          spec:
+            generate:
+              command:
+                - "/bin/bash"
+                - "-c"
+              args:
+                - "kustomize build . | argocd-vault-plugin generate -"
   repoServer:
     env:
       - name: ARGOCD_EXEC_TIMEOUT
         value: "120"
     volumes:
-     - name: cmp-plugins
+     - name: argocd-cmp-cm
        configMap:
-         name: cmp-plugins
+         name: argocd-cmp-cm
     extraContainers:
       - name: cmp-kustomized-helm
         command:
@@ -35,8 +89,8 @@ argo-cd:
             name: plugins
           - mountPath: /home/argocd/cmp-server/config/plugin.yaml
             subPath: kustomized-helm.yaml
-            name: cmp-plugins
-      - name: cmp-argocd-vault-plugin-helm
+            name: argocd-cmp-cm
+      - name: cmp-helm-argocd-vault-plugin
         command:
           - "/var/run/argocd/argocd-cmp-server"
         image: nixknight/kube-utils:v0.31
@@ -49,9 +103,9 @@ argo-cd:
           - mountPath: /home/argocd/cmp-server/plugins
             name: plugins
           - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-            subPath: argocd-vault-plugin-helm.yaml
-            name: cmp-plugins
-      - name: cmp-argocd-vault-plugin-kustomize
+            subPath: helm-argocd-vault-plugin.yaml
+            name: argocd-cmp-cm
+      - name: cmp-kustomize-argocd-vault-plugin
         command:
           - "/var/run/argocd/argocd-cmp-server"
         image: nixknight/kube-utils:v0.31
@@ -64,8 +118,8 @@ argo-cd:
           - mountPath: /home/argocd/cmp-server/plugins
             name: plugins
           - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-            subPath: argocd-vault-plugin-kustomize.yaml
-            name: cmp-plugins
+            subPath: kustomize-argocd-vault-plugin.yaml
+            name: argocd-cmp-cm
   server:
     ingress:
       enabled: true

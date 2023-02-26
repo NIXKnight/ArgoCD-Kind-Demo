@@ -2,67 +2,9 @@
 
 ## **Kind Cluster**
 
-```yaml
-# four node (3 workers) cluster config
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-name: caldera # any name
-networking:
-  ipFamily: ipv4
-  disableDefaultCNI: true # Use Cilium
-  podSubnet: "10.10.0.0/16"
-  serviceSubnet: "10.11.0.0/16"
-nodes:
-  - role: control-plane
-    image: kindest/node:v1.22.0
-    kubeadmConfigPatches:
-    - |
-      kind: InitConfiguration
-      nodeRegistration:
-        name: "control-plane"
-# Use the following snippet in Kind for the control-plane if you plan on using the default Kind CNI and not use Cilium.
-#     kubeletExtraArgs:
-    #       node-labels: "ingress-ready=true"
-    # extraPortMappings:
-    # - { containerPort: 80, hostPort: 80, protocol: TCP }
-    # - { containerPort: 443, hostPort: 443, protocol: TCP }
-  - role: worker
-    image: kindest/node:v1.22.0
-    kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        name: "worker-01"
-        kubeletExtraArgs:
-          node-labels: "NodeGroup=Tools-NodeGroup"
-    # extraMounts:
-    #   - { hostPath: "/home/saadali/Projects/Kubernetes/Kind/worker-01", containerPath: "/var/local-path-provisioner" }
-  - role: worker
-    image: kindest/node:v1.22.0
-    kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        name: "worker-02"
-        kubeletExtraArgs:
-          node-labels: "NodeGroup=Other-NodeGroup"
-    # extraMounts:
-    #   - { hostPath: "/home/saadali/Projects/Kubernetes/Kind/worker-02", containerPath: "/var/local-path-provisioner" }
-  - role: worker
-    image: kindest/node:v1.22.0
-    kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        name: "worker-03"
-        kubeletExtraArgs:
-          node-labels: "NodeGroup=Other-NodeGroup"
-    # extraMounts:
-    #   - { hostPath: "/home/saadali/Projects/Kubernetes/Kind/worker-03", containerPath: "/var/local-path-provisioner" }
-```
 Provision the cluster:
 ```bash
-kind create cluster --config kind-caldera-cluster.yaml
+kind create cluster --config argocd/environments/kind/scripts/kind-cluster-config.yaml
 ```
 
 Use any one of the CNI modules listed below.

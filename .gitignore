@@ -1,1 +1,2 @@
-charts/
+argocd/apps/*/charts/*
+!argocd/apps/argo-cd/charts/argo-cd

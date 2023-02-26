@@ -32,10 +32,10 @@ nodes:
       nodeRegistration:
         name: "worker-02"
 
-  - role: worker
-    image: kindest/node:v1.25.3
-    kubeadmConfigPatches:
-    - |
-      kind: JoinConfiguration
-      nodeRegistration:
-        name: "worker-03"
+  # - role: worker
+  #   image: kindest/node:v1.25.3
+  #   kubeadmConfigPatches:
+  #   - |
+  #     kind: JoinConfiguration
+  #     nodeRegistration:
+  #       name: "worker-03"

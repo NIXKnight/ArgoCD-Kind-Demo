@@ -18,16 +18,6 @@ bases:
 resources:
   - root.yaml
 
-configMapGenerator:
-  - name: cmp-plugins
-    files:
-      - config-management-plugins/kustomized-helm.yaml
-      - config-management-plugins/argocd-vault-plugin-helm.yaml
-      - config-management-plugins/argocd-vault-plugin-kustomize.yaml
-
-generatorOptions:
-  disableNameSuffixHash: true
-
 patches:
   # Patch for all ArgoCD applications that use Helm charts to use specific values file(s) in kind environment
   - target:
@@ -55,7 +45,7 @@ patches:
       version: "v1alpha1"
       kind: Application
       namespace: argoproj
-      labelSelector: deploymentStrategy=argocd-vault-plugin-helm
+      labelSelector: deploymentStrategy=helm-argocd-vault-plugin
     patch: |-
       apiVersion: argoproj.io/v1alpha1
       kind: Application
@@ -63,11 +53,11 @@ patches:
         name: not-important
         namespace: argoproj
         labels:
-          deploymentStrategy: argocd-vault-plugin-helm
+          deploymentStrategy: helm-argocd-vault-plugin
       spec:
         source:
           plugin:
-            name: argocd-vault-plugin-helm
+            name: helm-argocd-vault-plugin
             env:
               - name: ENVIRONMENT_DIR
                 value: environments/kind

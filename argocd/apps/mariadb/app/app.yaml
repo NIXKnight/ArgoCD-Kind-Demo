@@ -5,7 +5,7 @@ metadata:
   name: mariadb
   namespace: argoproj
   labels:
-    deploymentStrategy: argocd-vault-plugin-helm
+    deploymentStrategy: helm-argocd-vault-plugin
 spec:
   project: default
   source:
