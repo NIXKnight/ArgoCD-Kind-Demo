@@ -117,4 +117,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: master
+            targetRevision: NIXKnight/add-argocd-cmp-plugins-configmap

@@ -15,57 +15,39 @@ argo-cd:
     cmp:
       create: true
       plugins:
-        kustomized-helm: |
-          ---
-          apiVersion: argoproj.io/v1alpha1
-          kind: ConfigManagementPlugin
-          metadata:
-            name: kustomized-helm
-          spec:
-            init:
-              command:
-                - "/bin/bash"
-                - "-c"
-              args:
-                - "helm dependency build"
-            generate:
-              command:
-                - "/bin/bash"
-                - "-c"
-              args:
-                - "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build"
-        helm-argocd-vault-plugin: |
-          ---
-          apiVersion: argoproj.io/v1alpha1
-          kind: ConfigManagementPlugin
-          metadata:
-            name: helm-argocd-vault-plugin
-          spec:
-            init:
-              command:
-                - "/bin/bash"
-                - "-c"
-              args:
-                - "helm dependency build || true"
-            generate:
-              command:
-                - "/bin/bash"
-                - "-c"
-              args:
-                - "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -"
-        kustomize-argocd-vault-plugin: |
-          ---
-          apiVersion: argoproj.io/v1alpha1
-          kind: ConfigManagementPlugin
-          metadata:
-            name: kustomize-argocd-vault-plugin
-          spec:
-            generate:
-              command:
-                - "/bin/bash"
-                - "-c"
-              args:
-                - "kustomize build . | argocd-vault-plugin generate -"
+        kustomized-helm:
+          init:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm dependency build"
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build"
+        helm-argocd-vault-plugin:
+          init:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm dependency build || true"
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -"
+        kustomize-argocd-vault-plugin:
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "kustomize build . | argocd-vault-plugin generate -"
   repoServer:
     env:
       - name: ARGOCD_EXEC_TIMEOUT

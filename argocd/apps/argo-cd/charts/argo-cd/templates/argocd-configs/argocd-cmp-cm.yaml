@@ -14,6 +14,11 @@ metadata:
 data:
   {{- range $cmp_plugin, $cmp_plugin_config := .Values.configs.cmp.plugins }}
   {{ $cmp_plugin }}.yaml: |
-{{ $cmp_plugin_config | indent 4 }}
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: {{ $cmp_plugin }}
+    spec:
+      {{- toYaml $cmp_plugin_config | nindent 6 }}
   {{- end }}
 {{- end }}
