@@ -1,18 +1,16 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-bases:
+resources:
+  - root.yaml
   - ../../../apps/cert-manager/environments/kind/app
-  - ../../../apps/argo-cd/app
+  - ../../../apps/argoproj/app
   - ../../../apps/cilium/app
   - ../../../apps/metallb/environments/kind/app
   - ../../../apps/ingress-nginx/app
   # - ../../../apps/metrics-server/app
   # - ../../../apps/mariadb/app
   - ../../../apps/vault/app
-
-resources:
-  - root.yaml
 
 patches:
   # Patch for all ArgoCD applications that use Helm charts to use specific values file(s) in kind environment
@@ -113,4 +111,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: NIXKnight/update-app-versions
+            targetRevision: NIXKnight/add-argo-workflows
