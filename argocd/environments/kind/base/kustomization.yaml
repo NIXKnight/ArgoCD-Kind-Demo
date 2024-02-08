@@ -111,4 +111,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: NIXKnight/add-argo-workflows
+            targetRevision: master
