@@ -46,8 +46,8 @@ kubectl create namespace argoproj && kubectl -n argoproj create secret generic a
 ```
 Install ArgoCD:
 ```bash
-pushd argocd/apps/argo-cd/ && helm dependency build && popd
-helm template argocd argocd/apps/argo-cd/ --namespace argoproj -f argocd/apps/argo-cd/environments/kind/values.yaml | kubectl -n argoproj apply -f -
+pushd argocd/apps/argoproj/ && helm dependency build && popd
+helm template argoproj argocd/apps/argoproj/ --namespace argoproj -f argocd/apps/argoproj/environments/kind/values.yaml | kubectl -n argoproj apply -f -
 ```
 Deploy apps with ArgoCD:
 ```bash

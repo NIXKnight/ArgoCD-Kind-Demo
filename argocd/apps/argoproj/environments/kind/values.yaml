@@ -118,3 +118,24 @@ argo-cd:
         - secretName: argocd-tls-certificate
           hosts:
             - argocd.local.nixknight.pk
+
+argo-workflows:
+  controller:
+    workflowNamespaces: []
+  server:
+    enabled: true
+    extraArgs:
+      - --auth-mode=server
+    ingress:
+      enabled: true
+      hosts:
+        - "workflows.local.nixknight.pk"
+      ingressClassName: "nginx"
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        cert-manager.io/cluster-issuer: "selfsigning-issuer"
+      tls:
+        - secretName: workflows-tls-0
+          hosts:
+           - "workflows.local.nixknight.pk"

@@ -2,14 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: argoproj
   namespace: argoproj
   labels:
     deploymentStrategy: helm
 spec:
   project: default
   source:
-    path: argocd/apps/argo-cd
+    path: argocd/apps/argoproj
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
