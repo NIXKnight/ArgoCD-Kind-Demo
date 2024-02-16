@@ -1,5 +1,5 @@
 ---
-- name: Configure Vault Authentication and ACLs
+- name: Configure Vault Authentication and ACLs - Create Secrets
   connection: local
   hosts: localhost
   gather_facts: yes
@@ -15,7 +15,6 @@
       hashivault_k8s_auth_config:
         kubernetes_host: "{{ kubernetes_host }}"
         kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
-
 
     - name: Enable Vault kv-v2 Secret Engine
       hashivault_secret_engine:
@@ -37,3 +36,10 @@
         bound_service_account_names: "{{ item.role.bound_service_account_names }}"
         bound_service_account_namespaces: "{{ item.role.bound_service_account_namespaces }}"
       with_items: "{{ vault_roles_and_policies }}"
+
+    - name: Write Secrets to Vault
+      hashivault_secret:
+        mount_point: "{{ item.mount_point }}"
+        secret: "{{ item.secret }}"
+        data: "{{ item.data }}"
+      with_items: "{{ vault_secrets }}"

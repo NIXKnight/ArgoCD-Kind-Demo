@@ -15,7 +15,7 @@ export K8S_AUTH_SSL_CA_CERT="$K8S_SERVICEACCOUNT_DIR/ca.crt"
 export VAULT_ADDR="http://$VAULT_SERVICE_HOST:$VAULT_SERVICE_PORT"
 export VAULT_TOKEN=$(curl --cacert $K8S_AUTH_SSL_CA_CERT --header "Authorization: Bearer $K8S_AUTH_TOKEN" -X GET $K8S_API_SERVER/api/v1/namespaces/vault/secrets/vault-init | jq -r ".data.VAULT_INIT_JSON" |base64 -d | jq -r '.root_token')
 
-export ANSIBLE_STDOUT_CALLBACK="debug"
+export ANSIBLE_STDOUT_CALLBACK="ansible.posix.debug"
 export ANSIBLE_CALLBACKS_ENABLED="profile_tasks"
 
 cd /vault-acl/

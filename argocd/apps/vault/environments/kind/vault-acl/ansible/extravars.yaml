@@ -23,3 +23,9 @@ vault_roles_and_policies:
           path "kv_secrets/data/apps/*" {
             {{ vault_default_capabilities }}
           }
+
+vault_secrets:
+  - mount_point: kv_secrets
+    secret: apps/mariadb
+    data:
+      root_password: password
