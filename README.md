@@ -20,25 +20,6 @@ pushd argocd/apps/cilium/ && helm dependency build && popd
 helm template cilium argocd/apps/cilium/ --namespace kube-system -f argocd/apps/cilium/environments/kind/values.yaml | kubectl -n kube-system apply -f -
 ```
 
-### **Setup Calico in Kind**
-
-**NOTE:** These instructions for Calico are outdated at the moment, will be updated later on. Don't use Calico with this repo for now.
-
-Download Calico container images and load them to all Kind nodes:
-```bash
-docker pull docker.io/calico/cni:v3.23.0
-docker pull docker.io/calico/node:v3.23.0
-docker pull docker.io/calico/kube-controllers:v3.23.0
-kind load docker-image docker.io/calico/cni:v3.23.0 --name caldera
-kind load docker-image docker.io/calico/node:v3.23.0 --name caldera
-kind load docker-image docker.io/calico/kube-controllers:v3.23.0 --name caldera
-
-```
-Install Calico using Calico's manifest:
-```bash
-kubectl apply -f https://docs.projectcalico.org/v3.23/manifests/calico.yaml
-```
-
 ## **ArgoCD Initial Setup on Kind**
 Add private key for ArgoCD repo:
 ```bash
