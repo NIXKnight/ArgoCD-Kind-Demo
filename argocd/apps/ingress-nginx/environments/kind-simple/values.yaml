@@ -1,7 +1,10 @@
 ---
 ingress-nginx:
   controller:
-    kind: DaemonSet
-  defaultBackend:
-    service:
-      type: LoadBalancer
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Equal
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Equal

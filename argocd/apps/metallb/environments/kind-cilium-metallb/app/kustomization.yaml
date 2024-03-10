@@ -21,4 +21,4 @@ patches:
           deploymentStrategy: kustomize
       spec:
         source:
-          path: argocd/apps/metallb/environments/kind/
+          path: argocd/apps/metallb/environments/kind-cilium-metallb/
