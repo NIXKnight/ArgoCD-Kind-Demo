@@ -1,6 +1,16 @@
 ---
 ingress-nginx:
   controller:
+    hostPort:
+      enabled: true
+    service:
+      type: NodePort
+    nodeSelector:
+      ingress-ready: "true"
+    publishService:
+      enabled: false
+    extraArgs:
+      publish-status-address: "localhost"
     tolerations:
       - effect: NoSchedule
         key: node-role.kubernetes.io/master
