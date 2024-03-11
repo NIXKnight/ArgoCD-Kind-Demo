@@ -13,7 +13,7 @@ spec:
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: metrics-server
+    namespace: monitoring
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
