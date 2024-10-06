@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argoproj
+spec:
+  project: default
+  source:
+    path: argocd/environments/kind-cilium-metallb
+    repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
+    targetRevision: master
+  destination:
+    namespace: argoproj
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

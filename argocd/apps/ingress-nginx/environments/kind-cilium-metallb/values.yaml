@@ -1,0 +1,7 @@
+---
+ingress-nginx:
+  controller:
+    kind: DaemonSet
+  defaultBackend:
+    service:
+      type: LoadBalancer

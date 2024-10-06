@@ -1,0 +1,45 @@
+---
+- name: Configure Vault Authentication and ACLs - Create Secrets
+  connection: local
+  hosts: localhost
+  gather_facts: yes
+  become: False
+  vars_files:
+    - "{{ playbook_dir }}/extravars.yaml"
+  tasks:
+    - name: Enable Vault Kubernetes Authentication Method
+      hashivault_auth_method:
+        method_type: "kubernetes"
+
+    - name: Configure Vault to Talk to Kubernetes
+      hashivault_k8s_auth_config:
+        kubernetes_host: "{{ kubernetes_host }}"
+        kubernetes_ca_cert: "{{ kubernetes_ca_cert }}"
+
+    - name: Enable Vault kv-v2 Secret Engine
+      hashivault_secret_engine:
+        name: "{{ item.name }}"
+        backend: "{{ item.backend }}"
+      with_items: "{{ vault_secret_backends }}"
+
+    - name: Write Policies to Vault
+      hashivault_policy:
+        name: "{{ item.name }}"
+        rules: "{{ item.rules }}"
+        state: "present"
+      with_items: "{{ vault_roles_and_policies | map(attribute='policies') }}"
+
+    - name: Write Roles to Vault
+      hashivault_k8s_auth_role:
+        name: "{{ item.role.name }}"
+        policies: "{{ item.policies | map(attribute='name') }}"
+        bound_service_account_names: "{{ item.role.bound_service_account_names }}"
+        bound_service_account_namespaces: "{{ item.role.bound_service_account_namespaces }}"
+      with_items: "{{ vault_roles_and_policies }}"
+
+    - name: Write Secrets to Vault
+      hashivault_secret:
+        mount_point: "{{ item.mount_point }}"
+        secret: "{{ item.secret }}"
+        data: "{{ item.data }}"
+      with_items: "{{ vault_secrets }}"

@@ -1,0 +1,141 @@
+---
+argo-cd:
+  crds:
+    install: true
+    keep: false
+  dex:
+    enabled: false
+  configs:
+    secret:
+      argocdServerAdminPassword: "$2a$10$dE0AHjZA8cAte0CBzwRD6u7sdf0.S3WBsO29iu11dotKdeR53gOSu"
+    repositories:
+      argo-cd-git-repo:
+        type: git
+        url: git@github.com:NIXKnight/ArgoCD-Demo.git
+    cmp:
+      create: true
+      plugins:
+        kustomized-helm:
+          init:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm dependency build"
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "cd $ARGOCD_ENV_ENVIRONMENT_DIR && helm template ../../ --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f values.yaml --include-crds > manifest.yaml && kustomize build"
+        helm-argocd-vault-plugin:
+          init:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm dependency build || true"
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE -f $ARGOCD_ENV_ENVIRONMENT_DIR/values.yaml --include-crds | argocd-vault-plugin generate -"
+        kustomize-argocd-vault-plugin:
+          generate:
+            command:
+              - "/bin/bash"
+              - "-c"
+            args:
+              - "kustomize build . | argocd-vault-plugin generate -"
+  repoServer:
+    env:
+      - name: ARGOCD_EXEC_TIMEOUT
+        value: "120"
+    volumes:
+     - name: argocd-cmp-cm
+       configMap:
+         name: argocd-cmp-cm
+    extraContainers:
+      - name: cmp-kustomized-helm
+        command:
+          - "/var/run/argocd/argocd-cmp-server"
+        image: nixknight/kube-utils:v0.32
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: kustomized-helm.yaml
+            name: argocd-cmp-cm
+      - name: cmp-helm-argocd-vault-plugin
+        command:
+          - "/var/run/argocd/argocd-cmp-server"
+        image: nixknight/kube-utils:v0.32
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: helm-argocd-vault-plugin.yaml
+            name: argocd-cmp-cm
+      - name: cmp-kustomize-argocd-vault-plugin
+        command:
+          - "/var/run/argocd/argocd-cmp-server"
+        image: nixknight/kube-utils:v0.32
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: kustomize-argocd-vault-plugin.yaml
+            name: argocd-cmp-cm
+  server:
+    ingress:
+      enabled: true
+      ingressClassName: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-issuer
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      hosts:
+        - argocd.local.nixknight.pk
+      https: true
+      tls:
+        - secretName: argocd-tls-certificate
+          hosts:
+            - argocd.local.nixknight.pk
+
+argo-workflows:
+  controller:
+    workflowNamespaces: []
+  server:
+    enabled: true
+    extraArgs:
+      - --auth-mode=server
+    ingress:
+      enabled: true
+      hosts:
+        - "workflows.local.nixknight.pk"
+      ingressClassName: "nginx"
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        cert-manager.io/cluster-issuer: "selfsigned-issuer"
+      tls:
+        - secretName: workflows-tls-0
+          hosts:
+           - "workflows.local.nixknight.pk"
