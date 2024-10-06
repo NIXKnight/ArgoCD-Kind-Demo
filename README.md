@@ -17,3 +17,7 @@ Install ArgoCD and deploy apps:
 pushd argocd/apps/argoproj/ && helm dependency build && popd
 helm template argoproj argocd/apps/argoproj/ --namespace argoproj -f argocd/apps/argoproj/environments/kind-simple/values.yaml | kubectl -n argoproj apply -f - && kubectl wait --namespace argoproj --for=condition=ready pod --selector=app.kubernetes.io/component=repo-server --timeout=300s && kustomize build argocd/environments/kind-simple/ | kubectl apply -f -
 ```
+
+# **NOTE**
+
+A cilium based configuration will be added later on to this repository.
