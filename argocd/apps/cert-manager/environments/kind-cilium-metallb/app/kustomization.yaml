@@ -21,4 +21,4 @@ patches:
           deploymentStrategy: kustomize
       spec:
         source:
-          path: argocd/apps/cert-manager/environments/kind/
+          path: argocd/apps/cert-manager/environments/kind-simple/

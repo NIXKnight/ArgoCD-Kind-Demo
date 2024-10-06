@@ -3,12 +3,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - root.yaml
-  - ../../../apps/cert-manager/environments/kind/app
+  - ../../../apps/cert-manager/environments/kind-cilium-metallb/app
   - ../../../apps/argoproj/app
-  - ../../../apps/cilium/app
-  - ../../../apps/metallb/environments/kind/app
   - ../../../apps/ingress-nginx/app
-  # - ../../../apps/metrics-server/app
+  - ../../../apps/metrics-server/app
+  - ../../../apps/metallb/environments/kind-cilium-metallb/app
   # - ../../../apps/mariadb/app
   - ../../../apps/vault/app
 
@@ -32,7 +31,7 @@ patches:
         source:
           helm:
             valueFiles:
-              - environments/kind/values.yaml
+              - environments/kind-cilium-metallb/values.yaml
   # Patch for all ArgoCD applications that use Helm charts with ArgoCD Vault Plugin
   - target:
       group: "argoproj.io"
@@ -54,7 +53,7 @@ patches:
             name: argocd-vault-plugin-helm
             env:
               - name: ENVIRONMENT_DIR
-                value: environments/kind
+                value: environments/kind-cilium-metallb
               - name: AVP_TYPE
                 value: vault
               - name: AVP_AUTH_TYPE
@@ -83,7 +82,7 @@ patches:
             name: kustomized-helm
             env:
               - name: ENVIRONMENT_DIR
-                value: environments/kind
+                value: environments/kind-cilium-metallb
   # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
   # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
   - target:
@@ -111,4 +110,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: master
+            targetRevision: NIXKnight/rearrange-environment(s)

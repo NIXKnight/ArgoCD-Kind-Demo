@@ -1,0 +1,12 @@
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: vault-acl
+subjects:
+  - kind: ServiceAccount
+    name: vault-acl
+roleRef:
+  kind: Role
+  name: vault-acl
+  apiGroup: rbac.authorization.k8s.io

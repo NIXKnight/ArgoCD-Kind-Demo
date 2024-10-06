@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - serviceaccount.yaml
+  - role.yaml
+  - rolebinding.yaml
+  - cronjob.yaml
+configMapGenerator:
+  - name: vault-acl
+    files:
+      - ansible/vault-acls-and-roles-wrapper.sh
+      - ansible/vault-acls-and-roles-playbook.yaml
+      - ansible/extravars.yaml

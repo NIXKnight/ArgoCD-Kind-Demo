@@ -2,18 +2,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metrics-server
+  name: app-of-apps
   namespace: argoproj
-  labels:
-    deploymentStrategy: helm
 spec:
   project: default
   source:
-    path: argocd/apps/metrics-server
+    path: argocd/environments/kind-simple
     repoURL: git@github.com:NIXKnight/ArgoCD-Demo.git
     targetRevision: master
   destination:
-    namespace: monitoring
+    namespace: argoproj
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

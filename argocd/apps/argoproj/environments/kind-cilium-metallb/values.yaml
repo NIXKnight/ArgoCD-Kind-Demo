@@ -134,7 +134,7 @@ argo-workflows:
       annotations:
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-        cert-manager.io/cluster-issuer: "selfsigning-issuer"
+        cert-manager.io/cluster-issuer: "selfsigned-issuer"
       tls:
         - secretName: workflows-tls-0
           hosts:

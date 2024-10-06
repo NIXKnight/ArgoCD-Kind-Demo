@@ -1,0 +1,112 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - root.yaml
+  - ../../../apps/cert-manager/environments/kind-simple/app
+  - ../../../apps/argoproj/app
+  - ../../../apps/ingress-nginx/app
+  - ../../../apps/metrics-server/app
+  # - ../../../apps/mariadb/app
+  - ../../../apps/vault/app
+
+patches:
+  # Patch for all ArgoCD applications that use Helm charts to use specific values file(s) in kind environment
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argoproj
+      labelSelector: deploymentStrategy=helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: helm
+      spec:
+        source:
+          helm:
+            valueFiles:
+              - environments/kind-simple/values.yaml
+  # Patch for all ArgoCD applications that use Helm charts with ArgoCD Vault Plugin
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argoproj
+      labelSelector: deploymentStrategy=argocd-vault-plugin-helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: argocd-vault-plugin-helm
+      spec:
+        source:
+          plugin:
+            name: argocd-vault-plugin-helm
+            env:
+              - name: ENVIRONMENT_DIR
+                value: environments/kind-simple
+              - name: AVP_TYPE
+                value: vault
+              - name: AVP_AUTH_TYPE
+                value: k8s
+              - name: AVP_K8S_ROLE
+                value: argocd
+              - name: VAULT_ADDR
+                value: http://vault.vault.svc.cluster.local:8200
+  # Patch for all ArgoCD applications using kustomized-helm
+  - target:
+      group: argoproj.io
+      version: v1alpha1
+      kind: Application
+      labelSelector: deploymentStrategy=kustomized-helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argoproj
+        labels:
+          deploymentStrategy: kustomized-helm
+      spec:
+        source:
+          plugin:
+            name: kustomized-helm
+            env:
+              - name: ENVIRONMENT_DIR
+                value: environments/kind-simple
+  # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
+  # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argoproj
+          finalizers:
+            - resources-finalizer.argocd.argoproj.io
+  # Patch for all ArgoCD applications to change git branch for testing new apps
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argoproj
+        spec:
+          source:
+            targetRevision: NIXKnight/rearrange-environment(s)

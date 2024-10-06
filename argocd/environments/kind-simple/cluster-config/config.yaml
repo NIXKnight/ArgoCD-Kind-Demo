@@ -1,10 +1,10 @@
+---
 # four node (3 workers) cluster config
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: kind
+name: simple
 networking:
   ipFamily: ipv4
-  disableDefaultCNI: true
   podSubnet: "10.10.0.0/16"
   serviceSubnet: "10.11.0.0/16"
 nodes:
@@ -15,6 +15,15 @@ nodes:
       kind: InitConfiguration
       nodeRegistration:
         name: "control-plane"
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
+    extraPortMappings:
+    - containerPort: 80
+      hostPort: 80
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      protocol: TCP
 
   - role: worker
     image: kindest/node:v1.27.3
