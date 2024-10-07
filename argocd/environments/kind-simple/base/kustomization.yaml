@@ -109,4 +109,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: master
+            targetRevision: NIXKnight/add-gocd
