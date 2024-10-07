@@ -109,4 +109,4 @@ patches:
           namespace: argoproj
         spec:
           source:
-            targetRevision: NIXKnight/rearrange-environment(s)
+            targetRevision: master
