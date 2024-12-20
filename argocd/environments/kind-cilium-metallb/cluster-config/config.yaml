@@ -10,7 +10,7 @@ networking:
   serviceSubnet: "10.11.0.0/16"
 nodes:
   - role: control-plane
-    image: kindest/node:v1.27.3
+    image: kindest/node:v1.31.4
     kubeadmConfigPatches:
     - |
       kind: InitConfiguration
@@ -18,7 +18,7 @@ nodes:
         name: "control-plane"
 
   - role: worker
-    image: kindest/node:v1.27.3
+    image: kindest/node:v1.31.4
     kubeadmConfigPatches:
     - |
       kind: JoinConfiguration
@@ -26,7 +26,7 @@ nodes:
         name: "worker-01"
 
   - role: worker
-    image: kindest/node:v1.27.3
+    image: kindest/node:v1.31.4
     kubeadmConfigPatches:
     - |
       kind: JoinConfiguration
@@ -34,7 +34,7 @@ nodes:
         name: "worker-02"
 
   - role: worker
-    image: kindest/node:v1.27.3
+    image: kindest/node:v1.31.4
     kubeadmConfigPatches:
     - |
       kind: JoinConfiguration
